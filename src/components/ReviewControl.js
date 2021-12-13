@@ -1,74 +1,51 @@
 import React from 'react';
+import ReviewList from './ReviewList';
+import { connect } from 'react-redux';
+import { makeApiCall } from '../actions';
 
 class ReviewControl extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      error: null,
-      isLoaded: false,
-      reviews: []
-    };
+    // this.state = {
+    //   error: null,
+    //   isLoaded: false,
+    //   reviews: []
+    // };
   }
 
-  makeApiCall = () => {
-    fetch(`http://localhost:5004/api/Reviews`)
-      .then(response => response.json())
-      .then(
-        (jsonifiedResponse) => {
-          console.log(jsonifiedResponse);
-          this.setState({
-            isLoaded: true,
-            reviews: jsonifiedResponse
-          });
-        })
-        .catch((error) => {
-          console.log(error);
-          this.setState({
-            isLoaded: true,
-            error
-          });
-        });
-  }
 
   componentDidMount() {
-    this.makeApiCall();
+    const { dispatch } = this.props;
+    dispatch(makeApiCall());
   }
   
   render(){
-    const { error, isLoaded, reviews } = this.state;
-  if (error) {
-    return <React.Fragment>Error: {error.message}</React.Fragment>;
-  } else if (!isLoaded) {
-    return <React.Fragment>Loading...</React.Fragment>;
-  } else if (reviews.length) {
-    return (
-      <React.Fragment>
-        <h1>Reviews Controller</h1>
-        <ul>
-          {reviews.map((review) =>
-            <div key={review.reviewId}>
-              <h3>{review.name}</h3>
-              <h3>{review.city}</h3>
-              <p>Rating: {review.rating}</p>
-              <p>{review.description}</p>
-            </div>
-          )}
-        </ul>
-      </React.Fragment>
-    );
-  } else {
-    return <div>There are no reviews in the array</div>
+    const { error, isLoaded, reviews } = this.props;
+    if (error) {
+      return <React.Fragment>Error: {error.message}</React.Fragment>;
+    } else if (!isLoaded) {
+      return <React.Fragment>Loading...</React.Fragment>;
+    } else if (reviews.length) {
+      return (
+        <React.Fragment>
+          <h1>Reviews Controller</h1> 
+          <ReviewList reviews={reviews} />
+          
+        </React.Fragment>
+      );
+    } else {
+      return <div>There are no reviews in the array</div>
+    }
   }
 }
-}
 
-// const mapStateToProps = state => {
-//   return {
-//     reviews: state.reviews,
-//     isLoading: state.isLoading,
-//     error: state.error
-//   }
-// }
+const mapStateToProps = state => {
+  return {
+    reviews: state.reviews,
+    isLoaded: state.isLoaded,
+    error: state.error
+  }
+}
 
 // [
 //   {
@@ -89,4 +66,4 @@ class ReviewControl extends React.Component {
 //   }
 // ]
 
-export default ReviewControl; //connect(mapStateToProps)(ReviewControl);
+export default connect(mapStateToProps)(ReviewControl);
