@@ -12,7 +12,7 @@ export default function ReviewControl() {
   const reviews = useSelector((state) => state.reviews);
   const isLoaded = useSelector((state) => state.isLoaded);
   const showAddForm = useSelector((state) => state.showAddForm);
-  
+
   // const [showAddForm, setShowAddForm] = useState(false); //this return an array that has the state variable and a specific setState function.
   /* hook refactor:
 react hooks:

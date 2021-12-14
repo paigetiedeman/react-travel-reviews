@@ -5,11 +5,13 @@ export default function Header() {
 
 
   return (
-    <nav>
+    <div>
       <h2>Reviews!</h2>
       
       <Button variant="outlined" >View All</Button>
       <Button variant="outlined" >Search</Button>
-    </nav>
+    </div>
   )
 }
+
+// was set as <nav></nav>
