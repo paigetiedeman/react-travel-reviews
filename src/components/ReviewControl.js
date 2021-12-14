@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import ReviewList from './ReviewList';
 import { useSelector, useDispatch } from 'react-redux';
-import { makeApiCall } from '../actions';
+import { makeApiCall , showForm } from '../actions';
 import { Button } from '@mui/material';
 import NewReviewForm from './NewReviewForm';
+
 
 export default function ReviewControl() {
   const dispatch = useDispatch();
   const error = useSelector((state) => state.error);
   const reviews = useSelector((state) => state.reviews);
   const isLoaded = useSelector((state) => state.isLoaded);
-  const [showAddForm, setShowAddForm] = useState(false); //this return an array that has the state variable and a specific setState function.
+  const showAddForm = useSelector((state) => state.showAddForm);
+  
+  // const [showAddForm, setShowAddForm] = useState(false); //this return an array that has the state variable and a specific setState function.
   /* hook refactor:
 react hooks:
 state -> useState hook
@@ -35,12 +38,13 @@ reloads the updated list with the new review - optional
   // }
   const handleShowAddForm = () => {
     console.log('clicked add button')
-    setShowAddForm(true);
+    dispatch(showForm());
   };
 
   useEffect(() => {
     dispatch(makeApiCall());
-  }, []); //empty array means only do it on mount
+    console.log('re-rendered!')
+  }, [showAddForm]); //dependency array: empty array means only do it on mount(componentDidMount), no array - run code every rerender (componentDidUpdate), variable in the array means rerender when that specific state variable changes(shouldComponentUpdate)
 
   return (
     <>
@@ -48,7 +52,7 @@ reloads the updated list with the new review - optional
         Add
       </Button>
       {showAddForm ? (
-        <NewReviewForm setShowAddForm={setShowAddForm} />
+        <NewReviewForm  />
       ) : error ? (
         <>Error: {error.message}</>
       ) : !isLoaded ? (
@@ -60,7 +64,7 @@ reloads the updated list with the new review - optional
       ) : (
         <div>There are no reviews in the array</div>
       )}
-    </>
+    </> 
   );
 }
 

@@ -4,8 +4,8 @@ import { useDispatch } from 'react-redux';
 import { makeCreateApiCall } from '../actions';
 
 
-export default function NewReviewForm(props) {
-  const {setShowAddForm} = props;
+export default function NewReviewForm() {
+  // const {setShowAddForm} = props;
   const dispatch = useDispatch();
 
   //click handlers
@@ -21,8 +21,8 @@ export default function NewReviewForm(props) {
     }
     console.log(review)
     dispatch(makeCreateApiCall(review));
-    //dispatch/action function here
-    setShowAddForm(false);
+
+    //reset our state to defaults
   }
 
   return (

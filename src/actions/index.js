@@ -26,7 +26,12 @@ export const createSuccess = () => ({
 export const createFailure = (error) => ({
   type: c.CREATE_FAILURE,
   error
-})
+});
+
+export const showForm = () => ({
+  type: c.SHOW_FORM
+});
+
 
 export const makeApiCall = () => {
   return dispatch => {
