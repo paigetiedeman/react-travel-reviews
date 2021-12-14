@@ -1,51 +1,76 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import ReviewList from './ReviewList';
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { makeApiCall } from '../actions';
+import { Button } from '@mui/material';
+import NewReviewForm from './NewReviewForm';
 
-class ReviewControl extends React.Component {
-  constructor(props) {
-    super(props);
-    // this.state = {
-    //   error: null,
-    //   isLoaded: false,
-    //   reviews: []
-    // };
-  }
+export default function ReviewControl() {
+  const dispatch = useDispatch();
+  const error = useSelector((state) => state.error);
+  const reviews = useSelector((state) => state.reviews);
+  const isLoaded = useSelector((state) => state.isLoaded);
+  const [showAddForm, setShowAddForm] = useState(false); //this return an array that has the state variable and a specific setState function.
+  /* hook refactor:
+react hooks:
+state -> useState hook
+componentDidMount -> useEffect hook
+redux:
+mapStateToProps (getting from store) -> useSelector hook
+connect (allows us to use mapStateToProps and the dispatch function) -> useDispatch hook
+*/
 
+  /* add review:
+add review form component
+state to show it or not?
+extra actions/reducers - same ones as get - 3
+show success to the user somehow "you successfully added a review" - p tag
+reloads the updated list with the new review - optional 
 
-  componentDidMount() {
-    const { dispatch } = this.props;
+*/
+
+  // componentDidMount() {
+  //   const { dispatch } = this.props;
+  //   dispatch(makeApiCall());
+  // }
+  const handleShowAddForm = () => {
+    console.log('clicked add button')
+    setShowAddForm(true);
+  };
+
+  useEffect(() => {
     dispatch(makeApiCall());
-  }
-  
-  render(){
-    const { error, isLoaded, reviews } = this.props;
-    if (error) {
-      return <React.Fragment>Error: {error.message}</React.Fragment>;
-    } else if (!isLoaded) {
-      return <React.Fragment>Loading...</React.Fragment>;
-    } else if (reviews.length) {
-      return (
-        <React.Fragment>
-          <h1>Reviews Controller</h1> 
+  }, []); //empty array means only do it on mount
+
+  return (
+    <>
+      <Button variant="outlined" onClick={handleShowAddForm}>
+        Add
+      </Button>
+      {showAddForm ? (
+        <NewReviewForm setShowAddForm={setShowAddForm} />
+      ) : error ? (
+        <>Error: {error.message}</>
+      ) : !isLoaded ? (
+        <>Loading...</>
+      ) : reviews.length ? (
+        <>
           <ReviewList reviews={reviews} />
-          
-        </React.Fragment>
-      );
-    } else {
-      return <div>There are no reviews in the array</div>
-    }
-  }
+        </>
+      ) : (
+        <div>There are no reviews in the array</div>
+      )}
+    </>
+  );
 }
 
-const mapStateToProps = state => {
-  return {
-    reviews: state.reviews,
-    isLoaded: state.isLoaded,
-    error: state.error
-  }
-}
+// const mapStateToProps = state => {
+//   return {
+//     reviews: state.reviews,
+//     isLoaded: state.isLoaded,
+//     error: state.error
+//   }
+// }
 
 // [
 //   {
@@ -66,4 +91,20 @@ const mapStateToProps = state => {
 //   }
 // ]
 
-export default connect(mapStateToProps)(ReviewControl);
+// export default connect(mapStateToProps)(ReviewControl);
+
+// if (error) {
+//   return <>Error: {error.message}</>;
+// } else if (!isLoaded) {
+//   return <>Loading...</>;
+// } else if (reviews.length) {
+//   return (
+//     <>
+//       <h1>Reviews Controller</h1>
+//       <ReviewList reviews={reviews} />
+
+//     </>
+//   );
+// } else {
+//   return <div>There are no reviews in the array</div>
+// }
